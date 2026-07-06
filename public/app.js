@@ -517,7 +517,7 @@ function renderProduct(product) {
   const { color, color2 } = resolveColors(product, meta);
   const visualHtml = hasImg
     ? `<div class="product-img"><img src="${escapeHtml(meta.image)}" alt="" loading="lazy"></div>`
-    : `<div class="product-3d" data-key="${escapeHtml(String(product.stockline_id))}" data-model="${escapeHtml(resolveModel(product, meta, productCategory(product)))}" data-color="${escapeHtml(color)}"${color2 ? ` data-color2="${escapeHtml(color2)}"` : ''} data-label="${escapeHtml(resolveLabel(product, meta))}"></div>`;
+    : `<div class="product-3d" data-key="${escapeHtml(String(product.stockline_id))}" data-model="${escapeHtml(resolveModel(product, meta, productCategory(product)))}" data-color="${escapeHtml(color)}"${color2 ? ` data-color2="${escapeHtml(color2)}"` : ''} data-label="${escapeHtml(resolveLabel(product, meta))}"${meta.logo ? ` data-logo="${escapeHtml(meta.logo)}"` : ''}${meta.logo2 ? ` data-logo2="${escapeHtml(meta.logo2)}"` : ''}></div>`;
   const key = productKey(product.stockline_id);
   const qty = state.basket.get(key) || 0;
   const limit = itemLimit(product);

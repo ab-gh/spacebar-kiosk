@@ -1,14 +1,14 @@
 {
-  "note": "Display metadata for kiosk products. Numeric keys map quicktill stockline_id to metadata and win over name matching. The 'names' map matches case-insensitive substrings of the product name so metadata survives stockline renumbering — first matching key wins, keep specific keys before generic ones. model (can|ball|bottle), color/color2 and label tune the 3D product model; image swaps in a flat picture instead. All fields optional.",
+  "note": "Display metadata for kiosk products. Numeric keys map quicktill stockline_id to metadata and win over name matching. The 'names' map matches case-insensitive substrings of the product name so metadata survives stockline renumbering — first matching key wins, keep specific keys before generic ones. model (can|ball|bottle), color/color2, label and logo/logo2 tune the 3D product model; image swaps in a flat picture instead. Logos fall back to the text label until the file exists in public/images/brands/ — see README. All fields optional.",
   "names": {
-    "jack daniel": { "category": "Premix Cans", "label": "Jack Daniel's" },
-    "smirnoff": { "category": "Premix Cans", "label": "Smirnoff" },
-    "captain morgan": { "category": "Premix Cans", "label": "Captain Morgan", "color": "#cf962e", "color2": "#101418" },
-    "tanqueray": { "category": "Premix Cans", "label": "Tanqueray", "color": "#1d6b3f" },
-    "pale ros": { "category": "Canned Wine", "label": "nice", "color": "#f0a8bb" },
-    "sauvignon": { "category": "Canned Wine", "label": "nice", "color": "#e6d98f" },
-    "nice fizz": { "category": "Canned Wine", "label": "nice", "color": "#eac557" },
-    "sea change": { "category": "Canned Wine", "label": "Sea Change", "color": "#9fcfe8" },
+    "jack daniel": { "category": "Premix Cans", "label": "Jack Daniel's", "logo": "/images/brands/jack-daniels.svg", "logo2": "/images/brands/coca-cola.svg" },
+    "smirnoff": { "category": "Premix Cans", "label": "Smirnoff", "logo": "/images/brands/smirnoff.svg" },
+    "captain morgan": { "category": "Premix Cans", "label": "Captain Morgan", "color": "#cf962e", "color2": "#101418", "logo": "/images/brands/captain-morgan.svg", "logo2": "/images/brands/pepsi-max.svg" },
+    "tanqueray": { "category": "Premix Cans", "label": "Tanqueray", "color": "#1d6b3f", "logo": "/images/brands/tanqueray.svg" },
+    "pale ros": { "category": "Canned Wine", "label": "nice", "color": "#f0a8bb", "logo": "/images/brands/nice.svg" },
+    "sauvignon": { "category": "Canned Wine", "label": "nice", "color": "#e6d98f", "logo": "/images/brands/nice.svg" },
+    "nice fizz": { "category": "Canned Wine", "label": "nice", "color": "#eac557", "logo": "/images/brands/nice.svg" },
+    "sea change": { "category": "Canned Wine", "label": "Sea Change", "color": "#9fcfe8", "logo": "/images/brands/sea-change.svg" },
     "buzzballz": { "category": "BuzzBallz" }
   }
 }

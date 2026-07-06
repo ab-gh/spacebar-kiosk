@@ -137,6 +137,8 @@ ways to match a product:
 | `color` | Overrides the 3D model colour (any CSS colour, e.g. `#1e90ff`). By default it's guessed from the flavour in the product name. |
 | `color2` | Optional second colour for a two-tone can: bottom 2/3 uses `color2`, top 1/3 uses `color`. "& Coke" mixers get this automatically (cola-brown body, spirit-coloured top band). |
 | `label` | Text baked onto can models as the wordmark, like the BuzzBallz logo on the balls (which is built in and needs no config). Defaults to the product name up to the first "&" (so "Jack Daniel's & Coca-Cola" reads "Jack Daniel's"). |
+| `logo` | URL of a logotype image (SVG/PNG) baked onto the can in place of the text label, tinted to a flat contrast colour. Falls back silently to `label` while the file doesn't exist, so entries can be pre-wired. |
+| `logo2` | Secondary mark drawn smaller below the primary — e.g. the Coca-Cola script under the Jack Daniel's wordmark on the co-branded can. |
 
 All fields are optional. Products without an entry show a bobbing low-poly 3D
 model (colour and shape inferred from the name/category) and use the quicktill
@@ -154,6 +156,29 @@ off-screen cards are skipped. It pauses entirely on the sleep and confirmation
 screens. If WebGL is unavailable it falls back silently to an empty card.
 
 Stockline IDs come from the quicktill database (`stockline.id`).
+
+### Brand logotypes
+
+`products.json` is pre-wired to look for real logotype files in
+`public/images/brands/` — cans show the plain text wordmark until a file
+exists, then pick up the logotype automatically (tinted to a flat contrast
+colour, so any source colours work). Drop in SVGs with these names:
+
+| File | Product(s) | Suggested source |
+|---|---|---|
+| `jack-daniels.svg` | JD & Coca-Cola | Wikimedia Commons "Jack Daniel's logo" |
+| `coca-cola.svg` | JD & Coca-Cola (secondary mark) | Commons "Coca-Cola logo.svg" |
+| `smirnoff.svg` | Smirnoff & Cola | Commons "Smirnoff logo" |
+| `captain-morgan.svg` | Captain Morgan & Pepsi Max | Commons "Captain Morgan logo" |
+| `pepsi-max.svg` | Captain Morgan & Pepsi Max (secondary) | Commons "Pepsi MAX logo" |
+| `tanqueray.svg` | Tanqueray G&T | Commons "Tanqueray logo" |
+| `nice.svg` | Nice canned wines | nicedrinks.com press kit |
+| `sea-change.svg` | Sea Change 0% | seachangewine.com press kit |
+
+Most classic wordmarks on Commons are tagged `PD-textlogo` (plain typography
+is not copyrightable); they remain trademarks, used here to identify the
+genuine products sold at the bar. Prefer plain wordmark variants over crest /
+emblem versions — emblems can carry copyright, and they tint less cleanly.
 
 The mock catalogue in `src/server.js` mirrors the planned site stock
 (8 BuzzBallz flavours, 4 premix RTD cans, 4 canned wines), so mock mode
