@@ -386,6 +386,14 @@ const COKE_MIXES = [
   [/tequila/i, "#d9c089"]
 ];
 
+// Wordmark text baked onto can models (balls have the BuzzBallz logo built
+// in). Overridable via products.json `label`; defaults to the product name up
+// to the first "&" — "Jack Daniel's & Coca-Cola" reads "Jack Daniel's".
+function resolveLabel(product, meta) {
+  if (meta.label != null) return meta.label;
+  return (product.name || "").split("&")[0].trim();
+}
+
 // Returns { color, color2 } — color2 set only for two-tone cans (coke mixes).
 function resolveColors(product, meta) {
   if (meta.color) return { color: meta.color, color2: meta.color2 || null };
@@ -509,7 +517,7 @@ function renderProduct(product) {
   const { color, color2 } = resolveColors(product, meta);
   const visualHtml = hasImg
     ? `<div class="product-img"><img src="${escapeHtml(meta.image)}" alt="" loading="lazy"></div>`
-    : `<div class="product-3d" data-key="${escapeHtml(String(product.stockline_id))}" data-model="${escapeHtml(resolveModel(product, meta, productCategory(product)))}" data-color="${escapeHtml(color)}"${color2 ? ` data-color2="${escapeHtml(color2)}"` : ''}></div>`;
+    : `<div class="product-3d" data-key="${escapeHtml(String(product.stockline_id))}" data-model="${escapeHtml(resolveModel(product, meta, productCategory(product)))}" data-color="${escapeHtml(color)}"${color2 ? ` data-color2="${escapeHtml(color2)}"` : ''} data-label="${escapeHtml(resolveLabel(product, meta))}"></div>`;
   const key = productKey(product.stockline_id);
   const qty = state.basket.get(key) || 0;
   const limit = itemLimit(product);

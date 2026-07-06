@@ -72,25 +72,76 @@ function metal(color) {
   return new THREE.MeshPhongMaterial({ color, shininess: 110, specular: 0x9aa0a6 });
 }
 
-function makeCan(color, color2) {
+// Contrast ink for text drawn over a colour, like the real labels flip
+// dark/light to stay legible.
+function inkFor(color) {
+  const lum = color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
+  return lum > 0.4 ? "#15224f" : "#ffffff";
+}
+
+// Shrink the font until the text fits maxWidth. Returns the fitted px size.
+function fitText(ctx, text, fontFor, startPx, maxWidth) {
+  let px = startPx;
+  ctx.font = fontFor(px);
+  while (px > 10 && ctx.measureText(text).width > maxWidth) {
+    px -= 1;
+    ctx.font = fontFor(px);
+  }
+  return px;
+}
+
+// Bakes the can's colour bands + brand wordmark (twice, on opposite sides)
+// into a texture wrapped around the body — same trick as the BuzzBallz label,
+// so the logo shows front and back as the can spins.
+function canLabelTexture(color, color2, label) {
+  const W = 512;
+  const H = 256;
+  const cv = document.createElement("canvas");
+  cv.width = W;
+  cv.height = H;
+  const ctx = cv.getContext("2d");
+  // Canvas top maps to the top of the can (default flipY). Two-tone "& Coke"
+  // cans: spirit colour on the top third, cola brown on the bottom 2/3.
+  ctx.fillStyle = `#${color.getHexString()}`;
+  ctx.fillRect(0, 0, W, H);
+  if (color2) {
+    ctx.fillStyle = `#${color2.getHexString()}`;
+    ctx.fillRect(0, H / 3, W, H - H / 3);
+  }
+  if (label) {
+    // Wordmark centred on the dominant band, ink flipped for contrast.
+    const band = color2 || color;
+    const y = color2 ? H * 0.62 : H * 0.5;
+    ctx.fillStyle = inkFor(band);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const fontFor = px => `italic 900 ${px}px "Arial Black", Arial, sans-serif`;
+    // Only ~a quarter of the wrap faces the camera legibly — the rest
+    // foreshortens into the silhouette edges — so fit the text to that arc,
+    // and repeat it three times so one copy always faces the camera as the
+    // can spins (the ball gets away with two because its wordmark is huge).
+    const px = fitText(ctx, label, fontFor, 34, W * 0.25);
+    ctx.font = fontFor(px);
+    for (const cx of [W / 6, W / 2, (5 * W) / 6]) ctx.fillText(label, cx, y);
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 1; // anisotropic filtering is costly on the Pi GPU; not worth it at card size
+  return tex;
+}
+
+function makeCan(color, color2, label) {
   const group = new THREE.Group();
   const R = 0.6;
   const H = 1.95;
   const seg = 28; // smooth-walled, round silhouette
-  if (color2) {
-    // Two-tone "& Coke" can: bottom 2/3 the cola brown (color2), top 1/3 the
-    // spirit's indicator colour (color).
-    const lowH = H * (2 / 3);
-    const topH = H - lowH;
-    const low = new THREE.Mesh(new THREE.CylinderGeometry(R, R, lowH, seg, 1), plastic(color2, 55));
-    low.position.y = -H / 2 + lowH / 2;
-    group.add(low);
-    const top = new THREE.Mesh(new THREE.CylinderGeometry(R, R, topH, seg, 1), plastic(color, 55));
-    top.position.y = H / 2 - topH / 2;
-    group.add(top);
-  } else {
-    group.add(new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, seg, 1), plastic(color, 55)));
-  }
+  // One cylinder with the bands + wordmark baked into its wrap texture —
+  // fewer meshes than stacking two-tone cylinders, and the text comes free.
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(R, R, H, seg, 1),
+    new THREE.MeshPhongMaterial({ color: 0xffffff, map: canLabelTexture(color, color2, label), shininess: 55, specular: 0x6e6e6e })
+  );
+  group.add(body);
   const lid = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.92, R, 0.16, seg), metal(0xd2d8de));
   lid.position.y = H / 2 + 0.06;
   group.add(lid);
@@ -113,8 +164,7 @@ function ballLabelTexture(color) {
   ctx.fillStyle = `#${color.getHexString()}`;
   ctx.fillRect(0, 0, W, H);
 
-  const lum = color.r * 0.299 + color.g * 0.587 + color.b * 0.114; // linear luminance
-  ctx.fillStyle = lum > 0.4 ? "#15224f" : "#ffffff";
+  ctx.fillStyle = inkFor(color);
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   // Canvas top maps to the lid end of the ball (default flipY), so draw the
@@ -184,11 +234,11 @@ function toColor(str, fallback = "#7CC142") {
   }
 }
 
-function buildModel(type, colorStr, color2Str) {
+function buildModel(type, colorStr, color2Str, label) {
   const color = toColor(colorStr);
-  if (type === "ball") return makeBall(color);
+  if (type === "ball") return makeBall(color); // wordmark is built in
   if (type === "bottle") return makeBottle(color);
-  return makeCan(color, color2Str ? toColor(color2Str) : null);
+  return makeCan(color, color2Str ? toColor(color2Str) : null, label);
 }
 
 // ── Setup ─────────────────────────────────────────────────────────────────--
@@ -249,13 +299,13 @@ function hashString(str) {
 
 function getEntry(el) {
   const key = el.dataset.key || el.dataset.model;
-  const sig = `${el.dataset.model}|${el.dataset.color}|${el.dataset.color2 || ""}`;
+  const sig = `${el.dataset.model}|${el.dataset.color}|${el.dataset.color2 || ""}|${el.dataset.label || ""}`;
   let entry = entries.get(key);
   if (entry && entry.sig !== sig) entry = null; // model/colour changed → rebuild
   if (!entry) {
     const scene = new THREE.Scene();
     scene.add(makeLights());
-    const model = buildModel(el.dataset.model, el.dataset.color, el.dataset.color2);
+    const model = buildModel(el.dataset.model, el.dataset.color, el.dataset.color2, el.dataset.label);
     scene.add(model);
     entry = { scene, model, sig, phase: (hashString(key) % 1000) / 1000 * Math.PI * 2 };
     entries.set(key, entry);

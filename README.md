@@ -136,7 +136,7 @@ ways to match a product:
 | `model` | Overrides the 3D model shape: `can`, `ball` (BuzzBallz), or `bottle`. By default it's inferred from the name/category. |
 | `color` | Overrides the 3D model colour (any CSS colour, e.g. `#1e90ff`). By default it's guessed from the flavour in the product name. |
 | `color2` | Optional second colour for a two-tone can: bottom 2/3 uses `color2`, top 1/3 uses `color`. "& Coke" mixers get this automatically (cola-brown body, spirit-coloured top band). |
-| `label` | Text baked onto the can/bottle as the wordmark, like the BuzzBallz logo on the balls (which is built in and needs no config). Defaults to the product name up to the first "&" (so "Jack Daniel's & Coca-Cola" reads "Jack Daniel's"). |
+| `label` | Text baked onto can models as the wordmark, like the BuzzBallz logo on the balls (which is built in and needs no config). Defaults to the product name up to the first "&" (so "Jack Daniel's & Coca-Cola" reads "Jack Daniel's"). |
 
 All fields are optional. Products without an entry show a bobbing low-poly 3D
 model (colour and shape inferred from the name/category) and use the quicktill
