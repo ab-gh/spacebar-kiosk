@@ -12,7 +12,11 @@ const VIEWPORT = { width: 768, height: 1024 };
 
 await mkdir(OUT, { recursive: true });
 
-const browser = await puppeteer.launch({ headless: 'new' });
+const browser = await puppeteer.launch({
+  headless: 'new',
+  // Chromium refuses to sandbox when running as root (e.g. in a container).
+  args: process.getuid?.() === 0 ? ['--no-sandbox'] : []
+});
 const page = await browser.newPage();
 await page.setViewport(VIEWPORT);
 

@@ -44,132 +44,45 @@ function stockForClient(config, stock) {
   };
 }
 
+// Mirrors the planned site catalogue: 8 BuzzBallz flavours, 4 premix RTD
+// cans, 4 canned wines. Quantities are the full case counts from the stock
+// order. Prices are placeholders — real prices come from tillweb.
+const MOCK_ITEMS = [
+  // BuzzBallz — 200ml, cases of 24
+  { id: 101, name: "BuzzBallz Espresso Martini",     desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 120 },
+  { id: 102, name: "BuzzBallz Passionfruit Martini", desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 120 },
+  { id: 103, name: "BuzzBallz Lotta Colada",         desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 96 },
+  { id: 104, name: "BuzzBallz Strawberry 'Rita",     desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 96 },
+  { id: 105, name: "BuzzBallz Tequila 'Rita",        desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 72 },
+  { id: 106, name: "BuzzBallz Berry Cherry Limeade", desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 72 },
+  { id: 107, name: "BuzzBallz Chilli Mango",         desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 72 },
+  { id: 108, name: "BuzzBallz Choc Tease",           desc: "200ml 15% ABV", cat: "BuzzBallz", price: "4.50", qty: 48 },
+  // Premix RTD cans — classic serves
+  { id: 201, name: "Jack Daniel's & Coca-Cola",             desc: "Pre-mixed can 330ml", cat: "Premix Cans", price: "4.00", qty: 60 },
+  { id: 202, name: "Smirnoff No.21 Vodka & Cola",           desc: "Pre-mixed can 250ml", cat: "Premix Cans", price: "4.00", qty: 60 },
+  { id: 203, name: "Captain Morgan Spiced Gold & Pepsi Max", desc: "Pre-mixed can 250ml", cat: "Premix Cans", price: "4.00", qty: 60 },
+  { id: 204, name: "Tanqueray London Dry Gin & Tonic",      desc: "Pre-mixed can 250ml", cat: "Premix Cans", price: "4.00", qty: 48 },
+  // Canned wine — Nice range plus alcohol-free sparkling
+  { id: 301, name: "Nice Pale Rosé",          desc: "187ml can 12.5% ABV",   cat: "Canned Wine", price: "5.50", qty: 168 },
+  { id: 302, name: "Nice Sauvignon Blanc",    desc: "187ml can 12.5% ABV",   cat: "Canned Wine", price: "5.50", qty: 96 },
+  { id: 303, name: "Nice Fizz",               desc: "200ml can 11% ABV",     cat: "Canned Wine", price: "5.50", qty: 84 },
+  { id: 304, name: "Sea Change Sparkling 0%", desc: "200ml can alcohol-free", cat: "Canned Wine", price: "4.00", qty: 40 }
+];
+
 function mockStock(config) {
   return {
     location: config.location,
     expired_orders: [],
-    items: [
-      {
-        stockline_id: 101,
-        name: "BuzzBallz Strawberry 'Rita",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 102,
-        name: "BuzzBallz Chili Mango",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 103,
-        name: "BuzzBallz Grape Crunch",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 104,
-        name: "BuzzBallz Lemon Drop",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 105,
-        name: "BuzzBallz Watermelon Smash",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 106,
-        name: "BuzzBallz Blue Raspberry",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 107,
-        name: "BuzzBallz Peach Fuzz",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 108,
-        name: "BuzzBallz Cran Bliss",
-        description: "200ml 15% ABV",
-        category: "BuzzBallz",
-        price: "4.50",
-        available: true,
-        available_quantity: "24",
-        available_display: "24"
-      },
-      {
-        stockline_id: 201,
-        name: "Rum & Coke",
-        description: "Pre-mixed can 330ml",
-        category: "Mixed Cans",
-        price: "4.00",
-        available: true,
-        available_quantity: "48",
-        available_display: "48"
-      },
-      {
-        stockline_id: 202,
-        name: "Vodka & Coke",
-        description: "Pre-mixed can 330ml",
-        category: "Mixed Cans",
-        price: "4.00",
-        available: true,
-        available_quantity: "48",
-        available_display: "48"
-      },
-      {
-        stockline_id: 203,
-        name: "Jack & Coke",
-        description: "Pre-mixed can 330ml",
-        category: "Mixed Cans",
-        price: "4.00",
-        available: true,
-        available_quantity: "48",
-        available_display: "48"
-      },
-      {
-        stockline_id: 204,
-        name: "Gin & Tonic",
-        description: "Pre-mixed can 330ml",
-        category: "Mixed Cans",
-        price: "4.00",
-        available: true,
-        available_quantity: "48",
-        available_display: "48"
-      },
-    ]
+    items: MOCK_ITEMS.map(item => ({
+      stockline_id: item.id,
+      name: item.name,
+      description: item.desc,
+      category: item.cat,
+      price: item.price,
+      available: true,
+      available_quantity: String(item.qty),
+      available_display: String(item.qty)
+    }))
   };
 }
 

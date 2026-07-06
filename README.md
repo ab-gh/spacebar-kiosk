@@ -108,16 +108,23 @@ Category tabs are derived automatically from the quicktill **department** field
 on each stocktype — no configuration needed. To change which tab a product
 appears under, change its department in quicktill.
 
-Per-product display overrides are configured in `public/products.json`, keyed
-by quicktill stockline ID:
+Per-product display overrides are configured in `public/products.json`. Two
+ways to match a product:
+
+- **By stockline ID** (numeric keys): exact match on quicktill
+  `stockline.id`. Wins over name matching.
+- **By name** (the `names` map): case-insensitive substring match against the
+  product name. This is what ships by default — it survives stockline
+  renumbering between events, so art stays attached no matter what IDs the
+  till assigns. First matching key wins; keep specific keys ("nice fizz")
+  before generic ones.
 
 ```json
 {
-  "42": {
-    "image": "/images/products/some-beer.jpg",
-    "category": "Craft Beer"
-  },
-  "43": { "image": "/images/products/lemonade.jpg" }
+  "42": { "image": "/images/products/some-beer.jpg", "category": "Craft Beer" },
+  "names": {
+    "sea change": { "image": "/images/products/wine-sea-change-0.svg", "category": "Canned Wine" }
+  }
 }
 ```
 
@@ -130,6 +137,22 @@ Both fields are optional. Products without an entry show without an image and
 use the quicktill department as their category.
 
 Stockline IDs come from the quicktill database (`stockline.id`).
+
+### Product art
+
+The bundled product images are generated low-poly SVGs — flat-shaded polygon
+facets, no gradients or filters, ~2–4 KB each — cheap for the Pi 4 to
+rasterise and cache. Brand marks are abstracted to coloured shapes (the cola
+mark is a red ribbon, not a logo). Regenerate or restyle with:
+
+```sh
+node scripts/generate-product-art.mjs
+```
+
+One image exists for every item in the planned site catalogue (8 BuzzBallz
+flavours, 4 premix RTD cans, 4 canned wines), matched by name in
+`products.json`. The mock catalogue in `src/server.js` mirrors the same 16
+items, so mock mode exercises the full mapping end to end.
 
 ## Tillweb API
 

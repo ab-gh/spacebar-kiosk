@@ -272,8 +272,24 @@ function reconcileBasket() {
   }
 }
 
+// Display metadata for a product: exact stockline-id key first, then
+// case-insensitive substring match against the "names" map. Name matching
+// keeps images attached even when quicktill stockline IDs change between
+// events; first matching key wins, so order "names" most-specific first.
+function metaFor(product) {
+  const byId = state.productMeta[productKey(product.stockline_id)];
+  if (byId) return byId;
+  const names = state.productMeta.names;
+  if (!names) return null;
+  const haystack = String(product.name ?? "").toLowerCase();
+  for (const [needle, meta] of Object.entries(names)) {
+    if (needle && haystack.includes(needle.toLowerCase())) return meta;
+  }
+  return null;
+}
+
 function productCategory(product) {
-  return state.productMeta[productKey(product.stockline_id)]?.category ?? product.category ?? null;
+  return metaFor(product)?.category ?? product.category ?? null;
 }
 
 function getCategories() {
@@ -402,7 +418,7 @@ function renderTabs(categories) {
 }
 
 function renderProduct(product) {
-  const meta = state.productMeta[product.stockline_id] || {};
+  const meta = metaFor(product) || {};
   const hasImg = !!meta.image;
   const imgHtml = hasImg
     ? `<div class="product-img"><img src="${escapeHtml(meta.image)}" alt="" loading="lazy"></div>`

@@ -1,8 +1,22 @@
 {
-  "note": "Map quicktill stockline_id to optional display metadata. All fields are optional.",
-  "101": { "category": "Beer & Cider" },
-  "102": { "category": "Beer & Cider" },
-  "103": { "category": "Soft Drinks" },
-  "104": { "category": "Soft Drinks" },
-  "105": { "category": "Spirits" }
+  "note": "Display metadata for kiosk products. Numeric keys map quicktill stockline_id to metadata and win over name matching. The 'names' map matches case-insensitive substrings of the product name so art survives stockline renumbering — first matching key wins, keep specific keys before generic ones. All fields optional.",
+  "names": {
+    "espresso martini": { "image": "/images/products/buzzballz-espresso-martini.svg", "category": "BuzzBallz" },
+    "passionfruit martini": { "image": "/images/products/buzzballz-passionfruit-martini.svg", "category": "BuzzBallz" },
+    "lotta colada": { "image": "/images/products/buzzballz-lotta-colada.svg", "category": "BuzzBallz" },
+    "strawberry": { "image": "/images/products/buzzballz-strawberry-rita.svg", "category": "BuzzBallz" },
+    "tequila": { "image": "/images/products/buzzballz-tequila-rita.svg", "category": "BuzzBallz" },
+    "berry cherry": { "image": "/images/products/buzzballz-berry-cherry-limeade.svg", "category": "BuzzBallz" },
+    "chilli mango": { "image": "/images/products/buzzballz-chilli-mango.svg", "category": "BuzzBallz" },
+    "chili mango": { "image": "/images/products/buzzballz-chilli-mango.svg", "category": "BuzzBallz" },
+    "choc tease": { "image": "/images/products/buzzballz-choc-tease.svg", "category": "BuzzBallz" },
+    "jack daniel": { "image": "/images/products/premix-jd-cola.svg", "category": "Premix Cans" },
+    "smirnoff": { "image": "/images/products/premix-smirnoff-cola.svg", "category": "Premix Cans" },
+    "captain morgan": { "image": "/images/products/premix-captain-pepsi.svg", "category": "Premix Cans" },
+    "tanqueray": { "image": "/images/products/premix-tanqueray-tonic.svg", "category": "Premix Cans" },
+    "pale ros": { "image": "/images/products/wine-nice-pale-rose.svg", "category": "Canned Wine" },
+    "sauvignon": { "image": "/images/products/wine-nice-sauvignon-blanc.svg", "category": "Canned Wine" },
+    "nice fizz": { "image": "/images/products/wine-nice-fizz.svg", "category": "Canned Wine" },
+    "sea change": { "image": "/images/products/wine-sea-change-0.svg", "category": "Canned Wine" }
+  }
 }
